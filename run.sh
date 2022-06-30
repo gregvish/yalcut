@@ -60,6 +60,8 @@ mount --bind /sdcard $ROOT/sdcard
 mkdir -p /dev/shm
 chmod 777 /dev/shm
 
+mount -t tmpfs tmpfs $ROOT/run
+
 
 # Put current process into freezer cgroup
 echo "THAWED" > /dev/freezer/$ROOT/freezer.state
@@ -84,11 +86,16 @@ export LD_LIBRARY_PATH=
 chroot $ROOT /etc/init.d/dbus start
 chroot $ROOT /etc/init.d/cron start
 chroot $ROOT /etc/init.d/ssh start
+chroot $ROOT /etc/init.d/x11-common start
+
 
 # Fixes
 chroot $ROOT sudo -i rm -f /tmp/.X0-lock || echo "ok"
 
+chroot $ROOT /bin/sudo -i mkdir -p /run/user
+chroot $ROOT /bin/sudo -i chown user:user /run/user
+chroot $ROOT /bin/sudo -i chmod 0700 /run/user
 
 # Get shell
-chroot $ROOT sudo -i bash
+chroot $ROOT sudo -u user -i bash
 

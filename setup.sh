@@ -33,10 +33,30 @@ mount --bind /sys $ROOT/sys
 # Fix DNS
 echo "nameserver 1.1.1.1" > $ROOT/etc/resolv.conf
 
+# Fix sources.list
+echo "deb-src http://ports.ubuntu.com jammy main" >> $ROOT/etc/apt/sources.list
+echo "deb http://ports.ubuntu.com jammy universe" >> $ROOT/etc/apt/sources.list
+echo "deb-src http://ports.ubuntu.com jammy universe" >> $ROOT/etc/apt/sources.list
+echo "deb http://ports.ubuntu.com jammy multiverse" >> $ROOT/etc/apt/sources.list
+echo "deb-src http://ports.ubuntu.com jammy multiverse" >> $ROOT/etc/apt/sources.list
+echo "deb http://ports.ubuntu.com jammy restricted" >> $ROOT/etc/apt/sources.list
+echo "deb-src http://ports.ubuntu.com jammy restricted" >> $ROOT/etc/apt/sources.list
+echo "deb http://ports.ubuntu.com jammy-updates universe" >> $ROOT/etc/apt/sources.list
+echo "deb http://ports.ubuntu.com jammy-updates multiverse" >> $ROOT/etc/apt/sources.list
+echo "deb http://ports.ubuntu.com jammy-updates restricted" >> $ROOT/etc/apt/sources.list
+echo "deb http://ports.ubuntu.com jammy-updates main" >> $ROOT/etc/apt/sources.list
 
-PACKAGES="git tmux vim build-essential python3 htop openssh-server"
+# Add regular user with sudo privs
+echo "Creating user. Please input data"
+chroot $ROOT /bin/sudo -i adduser user
+chroot $ROOT /bin/sudo -i adduser user sudo
+
+
+# Install packages
+PACKAGES="git tmux vim build-essential python3 htop openssh-server \
+          xvfb x11-xserver-utils libgles2-mesa-dev libxtst-dev libxdamage-dev \
+          kitty dbus-x11 xfwm4 squashfuse snapd"
 
 chroot $ROOT /bin/sudo -i apt update
 chroot $ROOT /bin/sudo -i apt install $PACKAGES
-
 
