@@ -92,10 +92,15 @@ chroot $ROOT /etc/init.d/x11-common start
 # Fixes
 chroot $ROOT sudo -i rm -f /tmp/.X0-lock || echo "ok"
 
-chroot $ROOT /bin/sudo -i mkdir -p /run/user
-chroot $ROOT /bin/sudo -i chown user:user /run/user
-chroot $ROOT /bin/sudo -i chmod 0700 /run/user
+chroot $ROOT sudo -i mkdir -p /run/user
+chroot $ROOT sudo -i chown user:user /run/user
+chroot $ROOT sudo -i chmod 0700 /run/user
 
-# Get shell
-chroot $ROOT sudo -u user -i bash
+
+# Exec user init script, or get shell
+if [ -f $ROOT/home/user/init.sh ]; then
+    chroot $ROOT sudo -i /home/user/init.sh
+else
+    chroot $ROOT sudo -u user -i bash
+fi
 
