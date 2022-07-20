@@ -52,7 +52,7 @@ chroot $ROOT /bin/sudo -i adduser user sudo
 # Install packages
 PACKAGES="git tmux vim build-essential python3 htop openssh-server \
           xvfb x11-xserver-utils libgles2-mesa-dev libxtst-dev libxdamage-dev \
-          kitty dbus-x11 xfwm4 locales"
+          kitty dbus-x11 xfwm4 locales thunar synapse"
 
 chroot $ROOT /bin/sudo -i apt install $PACKAGES
 
