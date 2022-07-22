@@ -30,6 +30,15 @@ mount --bind /dev/cpuset $ROOT/dev/cpuset
 mount --bind /proc $ROOT/proc
 mount --bind /sys $ROOT/sys
 
+
+# Deal with CONFIG_ANDROID_PARANOID_NETWORK thing (on android 10)
+chroot $ROOT /bin/su -c "groupadd -g 3003 aid_inet"
+chroot $ROOT /bin/su -c "groupadd -g 3004 aid_net_raw"
+chroot $ROOT /bin/su -c "groupadd -g 3005 aid_admin"
+
+chroot $ROOT /bin/su -c "usermod -a -G aid_inet,aid_net_raw,aid_admin root"
+
+
 # Fix DNS
 echo "nameserver 1.1.1.1" > $ROOT/etc/resolv.conf
 
@@ -39,14 +48,19 @@ echo "deb http://ftp.nl.debian.org/debian testing main contrib non-free" \
 echo "deb-src http://ftp.nl.debian.org/debian testing main contrib non-free" \
     >> $ROOT/etc/apt/sources.list
 
-chroot $ROOT /bin/sh -c "apt update"
-chroot $ROOT /bin/sh -c "apt install sudo"
+# Make apt still work with the CONFIG_ANDROID_PARANOID_NETWORK thing
+echo 'APT::Sandbox::User "root";' > $ROOT/etc/apt/apt.conf.d/01-android-nosandbox
+
+
+chroot $ROOT /bin/su -c "apt update"
+chroot $ROOT /bin/su -c "apt install sudo"
 
 
 # Add regular user with sudo privs
 echo "Creating user. Please input data"
 chroot $ROOT /bin/sudo -i adduser user
 chroot $ROOT /bin/sudo -i adduser user sudo
+chroot $ROOT /bin/sudo -i usermod -a -G aid_inet,aid_net_raw,aid_admin user
 
 
 # Install packages
