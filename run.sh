@@ -10,12 +10,13 @@ fi
 
 ROOT="yalcut"
 
-if [ ! -d "/dev/freezer/$ROOT" ]; then
+if [ ! -d "/dev/freezer/" ]; then
     echo "Mounting freezer subsystem"
     mkdir -p /dev/freezer/
     mount -t cgroup -ofreezer freezer /dev/freezer/
-    mkdir -p /dev/freezer/$ROOT
 fi
+
+mkdir -p /dev/freezer/$ROOT
 
 
 # Upon exit, kill all tasks under cgroup
