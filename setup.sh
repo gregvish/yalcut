@@ -65,8 +65,9 @@ chroot $ROOT /bin/sudo -i usermod -a -G aid_inet,aid_net_raw,aid_admin user
 
 # Install packages
 PACKAGES="git tmux vim build-essential python3 htop openssh-server \
+          fzf fd-find keychain locales \
           xvfb x11-xserver-utils libgles2-mesa-dev libxtst-dev libxdamage-dev \
-          kitty dbus-x11 xfwm4 locales thunar synapse"
+          kitty dbus-x11 xfwm4 thunar synapse"
 
 chroot $ROOT /bin/sudo -i apt install $PACKAGES
 
